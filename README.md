@@ -42,7 +42,7 @@ openGauss社区官方网站：[https://opengauss.org/](https://opengauss.org/)
 ## 启动openGuass实例
 
 ```console
-$ docker run --name opengauss --privileged=true -d -e GS_PASSWORD=Enmo@123 enmotech/opengauss:latest
+$ docker run --name opengauss --privileged=true -d -e GS_PASSWORD=Enmo@123 -p 5432:5432 enmotech/opengauss:3.0.0
 ```
 
 ## 环境变量

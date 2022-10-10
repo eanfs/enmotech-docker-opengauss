@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-ADD  openGauss-3.1.0-CentOS-64bit.tar.bz2 /usr/local/opengauss
+ADD  openGauss-3.0.0-CentOS-64bit.tar.bz2 /usr/local/opengauss
 
 ENV LANG en_US.utf8
 
