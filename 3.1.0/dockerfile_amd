@@ -1,0 +1,46 @@
+FROM ubuntu:18.04
+
+ADD  openGauss-3.1.0-CentOS-64bit.tar.bz2 /usr/local/opengauss
+
+ENV LANG en_US.utf8
+
+
+RUN set -eux; \
+    cat /dev/null > /etc/apt/sources.list && \
+    echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse" >> /etc/apt/sources.list && \
+    apt-get update && apt-get install -y \
+    libaio-dev \
+    libkeyutils-dev \
+    locales \
+    wget \
+    vim  \
+    procps \
+    libreadline-dev && \
+    rm -rf /var/lib/apt/lists/*; \
+    ln -s /lib/x86_64-linux-gnu/libreadline.so.7 /lib/x86_64-linux-gnu/libreadline.so.6; \
+    groupadd -g 70 omm;  \
+    useradd -u 70 -g omm -m -s /bin/bash omm;  \
+    mkdir -p /var/lib/opengauss && \
+    mkdir -p /var/run/opengauss  && \
+    mkdir /docker-entrypoint-initdb.d && \
+    echo "export GAUSSHOME=/usr/local/opengauss"  >> /home/omm/.bashrc && \
+    echo "export PATH=\$GAUSSHOME/bin:\$PATH " >> /home/omm/.bashrc && \
+    echo "export LD_LIBRARY_PATH=\$GAUSSHOME/lib:\$LD_LIBRARY_PATH" >> /home/omm/.bashrc && \
+    echo "export PGDATA=/var/lib/opengauss/data" >> /home/omm/.bashrc && \
+    wget -P /usr/local/bin/ https://gitee.com/lee1002/gosu/attach_files/914780/download/gosu-amd64 -O /usr/local/bin/gosu && \
+    chmod +x /usr/local/bin/gosu && \
+    chown omm:omm /var/lib/opengauss /home/omm /var/run/opengauss /docker-entrypoint-initdb.d  && \
+    locale-gen en_US.UTF-8
+
+
+ENV GOSU_VERSION 1.12
+ENV PGDATA /var/lib/opengauss/data
+
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod 755 /usr/local/bin/entrypoint.sh;ln -s /usr/local/bin/entrypoint.sh / # backwards compat
+ENTRYPOINT ["entrypoint.sh"]
+EXPOSE 5432
+CMD ["gaussdb"]
