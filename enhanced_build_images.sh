@@ -7,7 +7,7 @@ default_platform=`case $(uname -m) in i386)   echo "linux/386" ;; i686)   echo "
 default_arch=`case $(uname -m) in i386)   echo "386" ;; i686)   echo "386" ;; x86_64) echo "amd64";; aarch64)echo "arm64";; esac`
 
 PLATFORM="$default_platform"
-VERSION="5.0.1"
+VERSION="6.0.2"
 IMAGE_NAME="opengauss"
 DOCKER_FILE="Dockerfile"
 IMAGE_PREFIX="docker.io/enmotech"
