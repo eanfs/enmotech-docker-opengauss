@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as builder
+FROM swr.cn-east-3.myhuaweicloud.com/intetech/ubuntu:22.04 as builder
 
 ARG TARGETARCH
 ARG SOFTWARE_TYPE="Enterprise-Edition"
@@ -54,7 +54,7 @@ RUN set -eux; \
 
 
 
-FROM ubuntu:22.04
+FROM swr.cn-east-3.myhuaweicloud.com/intetech/ubuntu:22.04
 
 ARG TARGETARCH
 
