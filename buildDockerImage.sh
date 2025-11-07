@@ -39,6 +39,32 @@ fi
 }
 
 
+# Check Podman version
+checkPodmanVersion() {
+  if hash podman 2>/dev/null; then
+    echo "Docker command failed, checking Podman version."
+    PODMAN_VERSION=$(podman version --format '{{.Server.Version | printf "%.5s" }}' 2>/dev/null || exit 0)
+    # Remove dot in Podman version
+    PODMAN_VERSION=${PODMAN_VERSION//./}
+    
+    if [ -z "$PODMAN_VERSION" ]; then
+      echo "Could not determine Docker or Podman version."
+      echo "Please ensure Docker or Podman is properly installed and accessible."
+      exit 1;
+    elif [ "$PODMAN_VERSION" -lt "${MIN_DOCKER_VERSION//./}" ]; then
+      echo "Podman version is below the minimum required version $MIN_DOCKER_VERSION"
+      echo "Please upgrade your Podman installation to proceed."
+      exit 1;
+    else
+      echo "Using Podman version $PODMAN_VERSION"
+    fi
+  else
+    echo "Could not determine Docker version and Podman is not available."
+    echo "Please ensure Docker or Podman is properly installed and accessible."
+    exit 1;
+  fi
+}
+
 # Check Docker version
 checkDockerVersion() {
   # Get Docker Server version
@@ -54,6 +80,8 @@ checkDockerVersion() {
     echo "Docker version is below the minimum required version $MIN_DOCKER_VERSION"
     echo "Please upgrade your Docker installation to proceed."
     exit 1;
+  else
+    echo "Using Docker version $DOCKER_VERSION"
   fi;
 }
 
